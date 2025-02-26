@@ -45,6 +45,9 @@ gem "tzinfo-data", platforms: %i[ mingw mswin x64_mingw jruby ]
 # Execute jobs in the background [https://github.com/mperham/sidekiq]
 gem "sidekiq", "~> 7.3"
 
+gem 'selenium-webdriver', '~> 3.5', '>= 3.5.1'
+gem 'aasm', '~> 5.5.0'
+
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
@@ -62,10 +65,4 @@ group :development do
 
   # Live reloading for Hotwire applications [https://github.com/hotwired/spark]
   gem "hotwire-spark", "~> 0.1"
-end
-
-group :test do
-  # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
-  gem "capybara"
-  gem "selenium-webdriver"
 end
