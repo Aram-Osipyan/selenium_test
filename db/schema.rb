@@ -15,7 +15,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_24_193127) do
   enable_extension "pg_catalog.plpgsql"
 
   create_table "three_ds_sessions", force: :cascade do |t|
-    t.string "creq"
+    t.text "creq"
     t.string "selenium_session_id"
     t.string "uuid"
     t.string "state", default: "created", null: false

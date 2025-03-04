@@ -18,18 +18,19 @@ module Api
         desired_capabilities: capabilities
       )
 
-      model = ThreeDsSession.create!(creq:, selenium_session_id: SeleniumExtra.get_driver_session_id(driver))
+      model = ThreeDsSession.create!(creq:, uuid: params[:uuid], selenium_session_id: SeleniumExtra.get_driver_session_id(driver))
 
-      jid = SessionCreateJob.perform_async(model.id)
+      driver.get("http://web:8000/api/selenium/three_ds_page/#{model.uuid}")
 
-      queue = Sidekiq::Queue.new  # Get default queue
-      workers = Sidekiq::Workers.new  # Get currently running jobs
-
-      while queue.map(&:jid).include?(jid) || workers.map { |_, _, w| w["payload"]["jid"] }.include?(jid)
-        sleep 1
-      end
+      wait = ::Selenium::WebDriver::Wait.new(timeout: 20)
+      element = wait.until { 
+        el = driver.find_element(:css, '.cp-otp-input-container')
+        el.displayed? ? el : nil  # Ensure it's visible
+      }
+      model.update!(state: 'otp_required')
 
       puts "Job has completed!"
+      # throw model.reload.state
       render json: { data: { uuid:  model.uuid, state: model.reload.state}}
     end
 

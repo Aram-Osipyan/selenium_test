@@ -6,6 +6,7 @@ Rails.application.routes.draw do
 
   namespace :api do
     resources :three_d_secure, only: [:create, :update]
+    resources :otp_code_enter, only: [:create]
     namespace :selenium do
       resources :three_ds_page, only: [:show]
     end

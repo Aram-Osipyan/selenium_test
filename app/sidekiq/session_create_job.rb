@@ -8,10 +8,12 @@ class SessionCreateJob
 
     driver.get("http://web:8000/api/selenium/three_ds_page/#{session.uuid}")
 
-    wait = ::Selenium::WebDriver::Wait.new(timeout: 10)
+    wait = ::Selenium::WebDriver::Wait.new(timeout: 20)
     element = wait.until { 
       el = driver.find_element(:css, '.cp-otp-input-container') 
       el.displayed? ? el : nil  # Ensure it's visible
     }
+
+    session.update!(state: 'otp_required')
   end
 end

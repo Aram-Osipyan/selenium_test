@@ -37,7 +37,7 @@ services:
       POSTGRES_USER: "${POSTGRES_USER}"
       POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
       # POSTGRES_DB: "${POSTGRES_DB}"
-    image: "postgres:17.2-bookworm"
+    image: "postgres:17.2"
     profiles: ["postgres"]
     restart: "${DOCKER_RESTART_POLICY:-unless-stopped}"
     stop_grace_period: "3s"
@@ -52,7 +52,7 @@ services:
         limits:
           cpus: "${DOCKER_REDIS_CPUS:-0}"
           memory: "${DOCKER_REDIS_MEMORY:-0}"
-    image: "redis:7.4.2-bookworm"
+    image: "redis:7.4.2"
     profiles: ["redis"]
     restart: "${DOCKER_RESTART_POLICY:-unless-stopped}"
     stop_grace_period: "3s"
