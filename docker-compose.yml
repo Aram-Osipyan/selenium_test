@@ -1,79 +1,52 @@
+version: '3.8'
 
 services:
   selenium-hub:
     image: selenium/hub:latest
     container_name: selenium-hub
-    ports:
-      - "4445:4444"
-      - "4443:4443"
+    networks:
+      - app_network
     environment:
       - SE_ROUTER_USERNAME=your_username
       - SE_ROUTER_PASSWORD=your_password
+      - SE_REGISTRATION_SECRET=${SE_REGISTRATION_SECRET}
+    volumes:
+      - ./certs:/certs:ro
+    command: >
+      java -jar /opt/selenium/selenium-server.jar standalone
+      --https-private-key /certs/key.pkcs8
+      --https-certificate /certs/cert.pem
 
   chrome:
     image: selenium/node-chrome:beta
     shm_size: 2gb
     depends_on:
       - selenium-hub
+    networks:
+      - app_network
     environment:
       - SE_EVENT_BUS_HOST=selenium-hub
       - SE_SESSION_TIMEOUT=600
       - SE_NODE_MAX_SESSIONS=20
+      - SE_REGISTRATION_SECRET=${SE_REGISTRATION_SECRET}
 
-  chrome2:
-    image: selenium/node-chrome:beta
-    shm_size: 2gb
+  nginx:
+    image: nginx:latest
+    container_name: selenium-proxy
+    networks:
+      - app_network
+    ports:
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./certs:/etc/nginx/ssl:ro
     depends_on:
       - selenium-hub
-    environment:
-      - SE_EVENT_BUS_HOST=selenium-hub
-      - SE_SESSION_TIMEOUT=600
-      - SE_NODE_MAX_SESSIONS=20
 
-  chrome3:
-    image: selenium/node-chrome:beta
-    shm_size: 2gb
-    depends_on:
-      - selenium-hub
-    environment:
-      - SE_EVENT_BUS_HOST=selenium-hub
-      - SE_SESSION_TIMEOUT=600
-      - SE_NODE_MAX_SESSIONS=20
-
-  chrome4:
-    image: selenium/node-chrome:beta
-    shm_size: 2gb
-    depends_on:
-      - selenium-hub
-    environment:
-      - SE_EVENT_BUS_HOST=selenium-hub
-      - SE_SESSION_TIMEOUT=600
-      - SE_NODE_MAX_SESSIONS=20
-
-  chrome5:
-    image: selenium/node-chrome:beta
-    shm_size: 2gb
-    depends_on:
-      - selenium-hub
-    environment:
-      - SE_EVENT_BUS_HOST=selenium-hub
-      - SE_SESSION_TIMEOUT=600
-      - SE_NODE_MAX_SESSIONS=20
-
-  chrome6:
-    image: selenium/node-chrome:beta
-    shm_size: 2gb
-    depends_on:
-      - selenium-hub
-    environment:
-      - SE_EVENT_BUS_HOST=selenium-hub
-      - SE_SESSION_TIMEOUT=600
-      - SE_NODE_MAX_SESSIONS=20
 volumes:
-  postgres: {}
-  redis: {}
+  certs: {}
+  nginx_conf: {}
 
 networks:
   app_network:
     driver: bridge
-
