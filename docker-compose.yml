@@ -1,28 +1,14 @@
 
 services:
-  # selenium:
-  #   image: seleniarm/standalone-chromium:latest
-  #   logging:
-  #     driver: none
-  #   ports:
-  #     - "4444:4444"  # Selenium WebDriver
-  #     - "5900:5900"  # VNC Server for UI debugging
-  #   environment:
-  #     - SE_SESSION_TIMEOUT=600
-  #     - SE_NODE_MAX_SESSIONS=20
-  #   privileged: true
-  #   shm_size: 2g
-  #   stdin_open: true
-  #   tty: true
-  #   networks:
-  #     - app_network
   selenium-hub:
     image: selenium/hub:latest
     container_name: selenium-hub
     ports:
-      - "4442:4442"
+      - "4445:4444"
       - "4443:4443"
-      - "4444:4444"
+    environment:
+      - SE_ROUTER_USERNAME=your_username
+      - SE_ROUTER_PASSWORD=your_password
 
   chrome:
     image: selenium/node-chrome:beta
